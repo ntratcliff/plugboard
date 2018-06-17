@@ -22,20 +22,10 @@ namespace Plugboard.Editor
             // Draw label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
-            // Don't indent children
-            int indentLevel = EditorGUI.indentLevel;
-            EditorGUI.indentLevel -= 1;
-
-            EditorGUI.BeginChangeCheck();
-
-            // get serialized object
-
             // Draw reorderable list 
             GetList(property).DoList(position);
 
-
             EditorGUI.indentLevel += 1;
-            EditorGUI.EndProperty();
         }
 
         private SerializedProperty GetEventsList(SerializedProperty property)

@@ -11,12 +11,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad85adae6fb57454998e1be3ac4482da, type: 3}
   m_Name: Events
   m_EditorClassIdentifier: 
-  eventTypes:
-  - name: test
-    id: 0
-  - name: sweet beans
-    id: 1
-  - name: 'some stuff '
-    id: 2
-  - name: Name
-    id: 3
+  eventTypes: []
