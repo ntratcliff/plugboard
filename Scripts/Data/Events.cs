@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Plugboard
@@ -15,7 +16,7 @@ namespace Plugboard
         private Data.EventType[] eventTypes;
 
         /// <summary>
-        /// Finds an <see cref="Data.EventType"/> by name. Not very efficient.
+        /// Finds an <see cref="Data.EventType"/> by name.
         /// </summary>
         /// <param name="name">The name of the event</param>
         public Data.EventType FindByName(string name)
