@@ -47,7 +47,7 @@ namespace Plugboard
         /// <summary>
         /// All defined event types, set via custom property drawer.
         /// </summary>
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Data.EventType[] eventTypes = new Data.EventType[0];
 
         /// <summary>
