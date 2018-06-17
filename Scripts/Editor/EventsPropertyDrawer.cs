@@ -8,15 +8,16 @@ namespace Plugboard.Editor
     internal sealed class EventsPropertyDrawer : PropertyDrawer
     {
         private const float FIELD_PADDING = 2f;
-        private const string EVENT_PROPERTY_NAME = "Name";
-        private const string EVENT_PROPERTY_ID = "Id";
+        private const string EVENTS_PROPERTY_LIST = "eventTypes";
+        private const string EVENT_PROPERTY_NAME = "name";
+        private const string EVENT_PROPERTY_ID = "id";
         private const string DEFAULT_EVENT_NAME = "<Unnamed Event>";
 
         private ReorderableList list;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginProperty(position, label, property);
+            EditorGUI.BeginProperty(position, GUIContent.none, property);
 
             // Draw label
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
@@ -25,11 +26,22 @@ namespace Plugboard.Editor
             int indentLevel = EditorGUI.indentLevel;
             EditorGUI.indentLevel -= 1;
 
+            EditorGUI.BeginChangeCheck();
+
+            // get serialized object
+
             // Draw reorderable list 
             GetList(property).DoList(position);
 
+
             EditorGUI.indentLevel += 1;
             EditorGUI.EndProperty();
+        }
+
+        private SerializedProperty GetEventsList(SerializedProperty property)
+        {
+            SerializedObject obj = new SerializedObject(property.objectReferenceValue);
+            return obj.FindProperty(EVENTS_PROPERTY_LIST);
         }
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
@@ -40,13 +52,14 @@ namespace Plugboard.Editor
         private ReorderableList GetList(SerializedProperty property)
         {
             if (list == null)
-                list = CreateReorderableList(property);
+                list = CreateReorderableListFor(GetEventsList(property));
 
             return list;
         }
 
-        private ReorderableList CreateReorderableList(SerializedProperty property)
+        private ReorderableList CreateReorderableListFor(SerializedProperty property)
         {
+            Debug.Log(property.name);
             ReorderableList list = new ReorderableList(property.serializedObject, property);
 
             list.drawHeaderCallback = (rect) =>
@@ -60,6 +73,12 @@ namespace Plugboard.Editor
 
             list.onReorderCallback = OnReorderList;
 
+            list.onChangedCallback = (l) =>
+            {
+                l.serializedProperty.serializedObject.ApplyModifiedProperties();
+                Debug.Log("List changed!");
+            };
+
             return list;
         }
 
@@ -67,21 +86,23 @@ namespace Plugboard.Editor
         {
             rect.y += FIELD_PADDING;
 
-            SerializedProperty element = list.serializedProperty.GetArrayElementAtIndex(index);
+            SerializedProperty element = list.serializedProperty.serializedObject
+                .FindProperty(EVENTS_PROPERTY_LIST).GetArrayElementAtIndex(index);
 
             // draw id label
             int id = element.FindPropertyRelative(EVENT_PROPERTY_ID).intValue;
-            EditorGUILayout.PrefixLabel("ID: " + id);
+            //EditorGUILayout.PrefixLabel("ID: " + id);
 
             // draw name field
             string name = element.FindPropertyRelative(EVENT_PROPERTY_NAME).stringValue;
             name = EditorGUI.TextField(
                 new Rect(
-                    rect.x, 
-                    rect.y, 
+                    rect.x,
+                    rect.y,
                     rect.width,
-                    EditorGUIUtility.singleLineHeight), 
+                    EditorGUIUtility.singleLineHeight),
                 name);
+
             element.FindPropertyRelative(EVENT_PROPERTY_NAME).stringValue = name;
         }
 
