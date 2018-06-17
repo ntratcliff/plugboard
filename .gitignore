@@ -1,6 +1,10 @@
 LICENSE.meta
 README.md.meta
 
+## plugboard-specific
+Data/Events.asset
+Data/Events.asset.meta
+
 #################
 ## Eclipse
 #################
