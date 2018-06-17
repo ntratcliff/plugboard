@@ -59,7 +59,6 @@ namespace Plugboard.Editor
 
         private ReorderableList CreateReorderableListFor(SerializedProperty property)
         {
-            Debug.Log(property.name);
             ReorderableList list = new ReorderableList(property.serializedObject, property);
 
             list.drawHeaderCallback = (rect) =>
@@ -76,7 +75,6 @@ namespace Plugboard.Editor
             list.onChangedCallback = (l) =>
             {
                 l.serializedProperty.serializedObject.ApplyModifiedProperties();
-                Debug.Log("List changed!");
             };
 
             return list;
@@ -93,6 +91,7 @@ namespace Plugboard.Editor
             int id = element.FindPropertyRelative(EVENT_PROPERTY_ID).intValue;
             //EditorGUILayout.PrefixLabel("ID: " + id);
 
+            EditorGUI.BeginChangeCheck();
             // draw name field
             string name = element.FindPropertyRelative(EVENT_PROPERTY_NAME).stringValue;
             name = EditorGUI.TextField(
@@ -103,7 +102,11 @@ namespace Plugboard.Editor
                     EditorGUIUtility.singleLineHeight),
                 name);
 
-            element.FindPropertyRelative(EVENT_PROPERTY_NAME).stringValue = name;
+            if (EditorGUI.EndChangeCheck())
+            {
+                element.FindPropertyRelative(EVENT_PROPERTY_NAME).stringValue = name;
+                element.serializedObject.ApplyModifiedProperties();
+            }
         }
 
         private void OnAddListElement(ReorderableList list)
