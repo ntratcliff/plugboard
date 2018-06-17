@@ -7,11 +7,15 @@ namespace Plugboard.Editor
     [CustomPropertyDrawer(typeof(Events))]
     internal sealed class EventsPropertyDrawer : PropertyDrawer
     {
-        private const float FIELD_PADDING = 2f;
+        private const string HEADER = "Event Types";
+
         private const string EVENTS_PROPERTY_LIST = "eventTypes";
         private const string EVENT_PROPERTY_NAME = "name";
         private const string EVENT_PROPERTY_ID = "id";
         private const string DEFAULT_EVENT_NAME = "<Unnamed Event>";
+
+        private const float ID_LABEL_WIDTH = 60f;
+        private const float FIELD_PADDING = 2f;
 
         private ReorderableList list;
 
@@ -53,7 +57,7 @@ namespace Plugboard.Editor
 
             list.drawHeaderCallback = (rect) =>
             {
-                EditorGUI.LabelField(rect, "Events");
+                EditorGUI.LabelField(rect, HEADER);
             };
 
             list.drawElementCallback = DrawListElement;
@@ -79,7 +83,11 @@ namespace Plugboard.Editor
 
             // draw id label
             int id = element.FindPropertyRelative(EVENT_PROPERTY_ID).intValue;
-            //EditorGUILayout.PrefixLabel("ID: " + id);
+
+            float labelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = ID_LABEL_WIDTH;
+
+            GUIContent label = new GUIContent("ID: " + id);
 
             EditorGUI.BeginChangeCheck();
             // draw name field
@@ -90,7 +98,10 @@ namespace Plugboard.Editor
                     rect.y,
                     rect.width,
                     EditorGUIUtility.singleLineHeight),
+                new GUIContent("ID: " + id),
                 name);
+
+            EditorGUIUtility.labelWidth = labelWidth;
 
             if (EditorGUI.EndChangeCheck())
             {

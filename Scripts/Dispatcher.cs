@@ -7,6 +7,7 @@ namespace Plugboard
 #endif
     public class Dispatcher : MonoBehaviour
     {
+        [SerializeField, HideInInspector]
         public Events Events;
 
         private void Awake()
